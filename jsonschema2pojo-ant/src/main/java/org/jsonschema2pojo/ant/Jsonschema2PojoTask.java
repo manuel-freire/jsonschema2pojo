@@ -137,6 +137,14 @@ public class Jsonschema2PojoTask extends Task implements GenerationConfig {
         ClassLoader extendedClassloader = buildExtendedClassloader();
         Thread.currentThread().setContextClassLoader(extendedClassloader);
 
+	    if (arrayDefinition == null) {
+		    arrayDefinition = List.class;
+	    }
+
+	    if (arrayImplementation == null) {
+		    arrayImplementation = ArrayList.class;
+	    }
+
         try {
             Jsonschema2Pojo.generate(this);
         } catch (IOException e) {

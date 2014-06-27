@@ -83,10 +83,8 @@ public class DefaultRule implements Rule<JFieldVar, JFieldVar> {
 
         if (defaultPresent && !field.type().isPrimitive() && node.isNull()) {
             field.init(JExpr._null());
-
-        } else if (fieldType.startsWith(List.class.getName())) {
+        } else if (fieldType.startsWith(ruleFactory.getGenerationConfig().getArrayDefinition().getName())) {
             field.init(getDefaultList(field.type(), node));
-
         } else if (fieldType.startsWith(Set.class.getName())) {
             field.init(getDefaultSet(field.type(), node));
 
