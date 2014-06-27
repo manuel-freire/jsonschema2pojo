@@ -16,15 +16,15 @@
 
 package org.jsonschema2pojo.rules;
 
-import java.util.List;
-import java.util.Set;
-
 import com.fasterxml.jackson.databind.JsonNode;
-import org.jsonschema2pojo.Schema;
-import org.jsonschema2pojo.util.Inflector;
 import com.sun.codemodel.JClass;
 import com.sun.codemodel.JPackage;
 import com.sun.codemodel.JType;
+import org.jsonschema2pojo.Schema;
+import org.jsonschema2pojo.util.Inflector;
+
+import java.util.List;
+import java.util.Set;
 
 /**
  * Applies the "type":"array" schema rule.
@@ -87,7 +87,8 @@ public class ArrayRule implements Rule<JPackage, JClass> {
         if (uniqueItems) {
             arrayType = jpackage.owner().ref(Set.class).narrow(itemType);
         } else {
-            arrayType = jpackage.owner().ref(List.class).narrow(itemType);
+	        Class<?> arrayClass = ruleFactory.getGenerationConfig().getArrayDefinition();
+            arrayType = jpackage.owner().ref(arrayClass).narrow(itemType);
         }
 
         if (rootSchemaIsArray) {

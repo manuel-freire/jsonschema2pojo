@@ -16,30 +16,44 @@
 
 package org.jsonschema2pojo.rules;
 
-import static org.hamcrest.MatcherAssert.*;
-import static org.hamcrest.Matchers.*;
-import static org.mockito.Mockito.*;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.node.ObjectNode;
+import com.sun.codemodel.JClass;
+import com.sun.codemodel.JCodeModel;
+import com.sun.codemodel.JPackage;
+import org.jsonschema2pojo.GenerationConfig;
+import org.jsonschema2pojo.NoopAnnotator;
+import org.jsonschema2pojo.Schema;
+import org.jsonschema2pojo.SchemaStore;
+import org.junit.Before;
+import org.junit.Test;
+import org.mockito.invocation.InvocationOnMock;
+import org.mockito.stubbing.Answer;
 
 import java.net.URI;
 import java.util.List;
 import java.util.Set;
 
-import org.junit.Test;
-
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.node.ObjectNode;
-import org.jsonschema2pojo.GenerationConfig;
-import org.jsonschema2pojo.NoopAnnotator;
-import org.jsonschema2pojo.Schema;
-import org.jsonschema2pojo.SchemaStore;
-import com.sun.codemodel.JClass;
-import com.sun.codemodel.JCodeModel;
-import com.sun.codemodel.JPackage;
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.is;
+import static org.hamcrest.Matchers.notNullValue;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
 
 public class ArrayRuleTest {
 
     private final GenerationConfig config = mock(GenerationConfig.class);
     private final ArrayRule rule = new ArrayRule(new RuleFactory(config, new NoopAnnotator(), new SchemaStore()));
+
+	@Before
+	public void setUp() throws Exception {
+		final Class<?> arrayDefinitionClass = List.class;
+		when(config.getArrayDefinition()).thenAnswer(new Answer<Object>() {
+			public Object answer(InvocationOnMock invocationOnMock) throws Throwable {
+				return arrayDefinitionClass;
+			}
+		});
+	}
 
     @Test
     public void arrayWithUniqueItemsProducesSet() {

@@ -56,6 +56,21 @@ public interface GenerationConfig {
      */
     Iterator<File> getSource();
 
+	/**
+	 * Gets the class used to instantiate array fields. Default is ArrayList.
+	 * Must be compatible with getArrayDefinition.
+	 *
+	 * @return The java class to use to instantiate array fields
+	 */
+	Class<?> getArrayImplementation();
+
+	/**
+	 * Gets the class used to declare array fields. Default is List.
+	 *
+	 * @return The java class to use to instantiate array fields
+	 */
+	Class<?> getArrayDefinition();
+
     /**
      * Gets the 'targetDirectory' configuration option.
      * 

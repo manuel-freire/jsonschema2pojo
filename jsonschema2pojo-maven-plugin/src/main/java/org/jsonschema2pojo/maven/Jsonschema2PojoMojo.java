@@ -16,15 +16,6 @@
 
 package org.jsonschema2pojo.maven;
 
-import static org.apache.commons.lang3.StringUtils.*;
-
-import java.io.File;
-import java.io.FileFilter;
-import java.io.IOException;
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.Iterator;
-
 import org.apache.maven.artifact.DependencyResolutionRequiredException;
 import org.apache.maven.plugin.AbstractMojo;
 import org.apache.maven.plugin.MojoExecutionException;
@@ -37,6 +28,15 @@ import org.jsonschema2pojo.GenerationConfig;
 import org.jsonschema2pojo.Jsonschema2Pojo;
 import org.jsonschema2pojo.NoopAnnotator;
 import org.jsonschema2pojo.SourceType;
+
+import java.io.File;
+import java.io.FileFilter;
+import java.io.IOException;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.Iterator;
+
+import static org.apache.commons.lang3.StringUtils.isNotBlank;
 
 /**
  * When invoked, this goal reads one or more <a
@@ -309,7 +309,27 @@ public class Jsonschema2PojoMojo extends AbstractMojo implements GenerationConfi
      */
     private boolean useCommonsLang3 = false;
 
-    /**
+	/**
+	 * Class to use when declaring arrays. For example, "java.util.List".
+	 *
+	 * @parameter expression="${jsonschema2pojo.arrayDefinitionClass}"
+	 *            default="java.util.List"
+	 * @since 0.4.4-ead
+	 */
+	private String arrayDefinitionClass = "java.util.List";
+
+	/**
+	 * Class to use for array instantiation. Must be compatible with
+	 * arrayDefinitionClass.
+	 *
+	 * @parameter expression="${jsonschema2pojo.arrayImplementationClass}"
+	 *            default="java.util.ArrayList"
+	 * @since 0.4.4-ead
+	 */
+	private String arrayImplementationClass = "java.util.ArrayList";
+
+
+	/**
      * Whether to initialize Set and List fields as empty collections, or leave them as <code>null</code>.
      *
      * @parameter expression="${jsonschema2pojo.initializeCollections}" default="true"
@@ -432,7 +452,35 @@ public class Jsonschema2PojoMojo extends AbstractMojo implements GenerationConfi
         return Arrays.asList(sourcePaths).iterator();
     }
 
-    @Override
+	@Override
+	@SuppressWarnings("unchecked")
+	public Class<?> getArrayDefinition() {
+		if (isNotBlank(arrayDefinitionClass)) {
+			try {
+				return (Class<?>) Class.forName(arrayDefinitionClass);
+			} catch (ClassNotFoundException e) {
+				throw new IllegalArgumentException(e);
+			}
+		} else {
+			return java.util.List.class;
+		}
+	}
+
+	@Override
+	@SuppressWarnings("unchecked")
+	public Class<?> getArrayImplementation() {
+		if (isNotBlank(arrayImplementationClass)) {
+			try {
+				return (Class<?>) Class.forName(arrayImplementationClass);
+			} catch (ClassNotFoundException e) {
+				throw new IllegalArgumentException(e);
+			}
+		} else {
+			return java.util.ArrayList.class;
+		}
+	}
+
+	@Override
     public boolean isUsePrimitives() {
         return usePrimitives;
     }

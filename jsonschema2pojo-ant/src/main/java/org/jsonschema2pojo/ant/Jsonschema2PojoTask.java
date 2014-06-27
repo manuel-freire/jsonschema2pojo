@@ -16,7 +16,17 @@
 
 package org.jsonschema2pojo.ant;
 
-import static org.apache.commons.lang3.StringUtils.*;
+import org.apache.tools.ant.BuildException;
+import org.apache.tools.ant.Task;
+import org.apache.tools.ant.types.Path;
+import org.apache.tools.ant.types.Reference;
+import org.jsonschema2pojo.AllFileFilter;
+import org.jsonschema2pojo.AnnotationStyle;
+import org.jsonschema2pojo.Annotator;
+import org.jsonschema2pojo.GenerationConfig;
+import org.jsonschema2pojo.Jsonschema2Pojo;
+import org.jsonschema2pojo.NoopAnnotator;
+import org.jsonschema2pojo.SourceType;
 
 import java.io.File;
 import java.io.FileFilter;
@@ -31,17 +41,8 @@ import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
 
-import org.apache.tools.ant.BuildException;
-import org.apache.tools.ant.Task;
-import org.apache.tools.ant.types.Path;
-import org.apache.tools.ant.types.Reference;
-import org.jsonschema2pojo.AllFileFilter;
-import org.jsonschema2pojo.AnnotationStyle;
-import org.jsonschema2pojo.Annotator;
-import org.jsonschema2pojo.GenerationConfig;
-import org.jsonschema2pojo.Jsonschema2Pojo;
-import org.jsonschema2pojo.NoopAnnotator;
-import org.jsonschema2pojo.SourceType;
+import static org.apache.commons.lang3.StringUtils.defaultString;
+import static org.apache.commons.lang3.StringUtils.isNotBlank;
 
 /**
  * When invoked, this task reads one or more <a
@@ -87,6 +88,10 @@ public class Jsonschema2PojoTask extends Task implements GenerationConfig {
     private SourceType sourceType = SourceType.JSONSCHEMA;
 
     private Path classpath;
+
+	private Class<?> arrayDefinition;
+
+	private Class<?> arrayImplementation;
 
     private boolean removeOldOutput = false;
 
@@ -434,7 +439,17 @@ public class Jsonschema2PojoTask extends Task implements GenerationConfig {
         return Collections.singleton(source).iterator();
     }
 
-    @Override
+	@Override
+	public Class<?> getArrayImplementation() {
+		return arrayImplementation;
+	}
+
+	@Override
+	public Class<?> getArrayDefinition() {
+		return arrayDefinition;
+	}
+
+	@Override
     public File getTargetDirectory() {
         return targetDirectory;
     }

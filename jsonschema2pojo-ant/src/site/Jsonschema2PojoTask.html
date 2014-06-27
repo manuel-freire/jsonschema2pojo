@@ -165,6 +165,16 @@
         <td valign="top">Whether to use the java type <code>long</code> (or <code>Long</code>) instead of <code>int</code> (or <code>Integer</code>) when representing the JSON Schema type 'integer'.</td>
         <td align="center" valign="top">No (default <code>false</code>)</td>
       </tr>
+        <tr>
+            <td valign="top">arrayDefinition</td>
+            <td valign="top">The java class to use for array definition (eg.: java.util.List).</td>
+            <td align="center" valign="top">No (default <code>java.util.List</code>)</td>
+        </tr>
+        <tr>
+            <td valign="top">arrayImplementation</td>
+            <td valign="top">The java class to use for array implementation (eg.: java.util.ArrayList).</td>
+            <td align="center" valign="top">No (default <code>java.util.ArrayList</code>)</td>
+        </tr>
       <tr>
         <td valign="top">usePrimitives</td>
         <td valign="top">Whether to use primitives (<code>long</code>, <code>double</code>, <code>boolean</code>) instead of wrapper types where possible when generating bean properties (has the side-effect of making those.</td>

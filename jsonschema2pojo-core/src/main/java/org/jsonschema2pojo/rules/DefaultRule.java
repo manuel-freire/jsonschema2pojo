@@ -27,6 +27,9 @@ import com.sun.codemodel.JExpression;
 import com.sun.codemodel.JFieldVar;
 import com.sun.codemodel.JInvocation;
 import com.sun.codemodel.JType;
+import org.joda.time.DateTime;
+import org.jsonschema2pojo.Schema;
+
 import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -34,9 +37,8 @@ import java.util.Date;
 import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Set;
-import static org.apache.commons.lang3.StringUtils.*;
-import org.joda.time.DateTime;
-import org.jsonschema2pojo.Schema;
+
+import static org.apache.commons.lang3.StringUtils.isNotEmpty;
 
 /**
  * Applies the "enum" schema rule.
@@ -161,7 +163,8 @@ public class DefaultRule implements Rule<JFieldVar, JFieldVar> {
 
         JClass listGenericType = ((JClass) fieldType).getTypeParameters().get(0);
 
-        JClass listImplClass = fieldType.owner().ref(ArrayList.class);
+	    Class<?> arrayClass = ruleFactory.getGenerationConfig().getArrayImplementation();
+        JClass listImplClass = fieldType.owner().ref(arrayClass);
         listImplClass = listImplClass.narrow(listGenericType);
 
         JInvocation newListImpl = JExpr._new(listImplClass);

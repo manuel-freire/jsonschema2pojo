@@ -16,13 +16,10 @@
 
 package org.jsonschema2pojo.cli;
 
-import static org.apache.commons.lang3.StringUtils.*;
-
-import java.io.File;
-import java.io.FileFilter;
-import java.util.Iterator;
-import java.util.List;
-
+import com.beust.jcommander.JCommander;
+import com.beust.jcommander.Parameter;
+import com.beust.jcommander.ParameterException;
+import com.beust.jcommander.converters.FileConverter;
 import org.jsonschema2pojo.AllFileFilter;
 import org.jsonschema2pojo.AnnotationStyle;
 import org.jsonschema2pojo.Annotator;
@@ -30,10 +27,13 @@ import org.jsonschema2pojo.GenerationConfig;
 import org.jsonschema2pojo.NoopAnnotator;
 import org.jsonschema2pojo.SourceType;
 
-import com.beust.jcommander.JCommander;
-import com.beust.jcommander.Parameter;
-import com.beust.jcommander.ParameterException;
-import com.beust.jcommander.converters.FileConverter;
+import java.io.File;
+import java.io.FileFilter;
+import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.List;
+
+import static org.apache.commons.lang3.StringUtils.defaultString;
 
 /**
  * Describes and parses the command line arguments supported by the
@@ -77,12 +77,21 @@ public class Arguments implements GenerationConfig {
     @Parameter(names = { "-a", "--annotation-style" })
     private AnnotationStyle annotationStyle = AnnotationStyle.JACKSON;
 
-    @Parameter(names = { "-A", "--custom-annotator" }, description = "The fully qualified class name of referring to a custom annotator class that implements org.jsonschema2pojo.Annotator " +
-            "and will be used in addition to the --annotation-style. If you want to use a custom annotator alone, set --annotation-style to none",
+    @Parameter(names = { "-A", "--custom-annotator" }, description = "The fully qualified class name of referring to a custom array-container declaration, such as java.util.List",
             converter = ClassConverter.class)
-    private Class<? extends Annotator> customAnnotator = NoopAnnotator.class;
+    private Class<?> arrayDefinitionClass = java.util.List.class;
 
-    @Parameter(names = { "-303", "--jsr303-annotations" }, description = "Add JSR-303 annotations to generated Java types.")
+	@Parameter(names = { "-X", "--array-implementation" }, description = "The fully qualified class name of referring to a custom array-container implementation, such as java.util.ArrayList",
+		converter = ClassConverter.class)
+	private Class<?> arrayImplementationClass = ArrayList.class;
+
+	@Parameter(names = { "-Y", "--array-definition" }, description = "The fully qualified class name of referring to a custom annotator class that implements org.jsonschema2pojo.Annotator " +
+		"and will be used in addition to the --annotation-style. If you want to use a custom annotator alone, set --annotation-style to none",
+		converter = ClassConverter.class)
+	private Class<? extends Annotator> customAnnotator = NoopAnnotator.class;
+
+
+	@Parameter(names = { "-303", "--jsr303-annotations" }, description = "Add JSR-303 annotations to generated Java types.")
     private boolean includeJsr303Annotations = false;
 
     @Parameter(names = { "-T", "--source-type" })
@@ -202,6 +211,16 @@ public class Arguments implements GenerationConfig {
     public boolean isIncludeJsr303Annotations() {
         return includeJsr303Annotations;
     }
+
+	@Override
+	public Class<?> getArrayImplementation() {
+		return arrayImplementationClass;
+	}
+
+	@Override
+	public Class<?> getArrayDefinition() {
+		return arrayDefinitionClass;
+	}
 
     @Override
     public SourceType getSourceType() {

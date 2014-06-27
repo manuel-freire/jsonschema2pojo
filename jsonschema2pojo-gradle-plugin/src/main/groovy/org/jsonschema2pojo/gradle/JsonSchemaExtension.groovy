@@ -30,75 +30,85 @@ import org.jsonschema2pojo.SourceType
  * @see https://github.com/joelittlejohn/jsonschema2pojo
  */
 public class JsonSchemaExtension implements GenerationConfig {
-  boolean generateBuilders
-  boolean usePrimitives
-  Iterable<File> sourceFiles
-  File targetDirectory
-  String targetPackage
-  char[] propertyWordDelimiters
-  boolean useLongIntegers
-  boolean useDoubleNumbers
-  boolean includeHashcodeAndEquals
-  boolean includeToString
-  AnnotationStyle annotationStyle
-  Class<? extends Annotator> customAnnotator
-  boolean includeJsr303Annotations
-  SourceType sourceType
-  boolean removeOldOutput
-  String outputEncoding
-  boolean useJodaDates
-  boolean useCommonsLang3
-  FileFilter fileFilter
-  boolean initializeCollections
+    boolean generateBuilders
+    boolean usePrimitives
+    Iterable<File> sourceFiles
+    File targetDirectory
+    String targetPackage
+    char[] propertyWordDelimiters
+    boolean useLongIntegers
+    boolean useDoubleNumbers
+    boolean includeHashcodeAndEquals
+    boolean includeToString
+    AnnotationStyle annotationStyle
+    Class<? extends Annotator> customAnnotator
+    Class<?> arrayDefinition
+    Class<?> arrayImplementation
+    boolean includeJsr303Annotations
+    SourceType sourceType
+    boolean removeOldOutput
+    String outputEncoding
+    boolean useJodaDates
+    boolean useCommonsLang3
+    FileFilter fileFilter
+    boolean initializeCollections
 
-  public JsonSchemaExtension() {
-    // See DefaultGenerationConfig
-    generateBuilders = false
-    usePrimitives = false
-    sourceFiles = []
-    targetPackage = ''
-    propertyWordDelimiters = [] as char[]
-    useLongIntegers = false
-    useDoubleNumbers = true
-    includeHashcodeAndEquals = true
-    includeToString = true
-    annotationStyle = AnnotationStyle.JACKSON
-    customAnnotator = NoopAnnotator.class
-    includeJsr303Annotations = false
-    sourceType = SourceType.JSONSCHEMA
-    outputEncoding = 'UTF-8'
-    useJodaDates = false
-    useCommonsLang3 = false
-    fileFilter = new AllFileFilter()
-    initializeCollections = true
-  }
+    public JsonSchemaExtension() {
+        // See DefaultGenerationConfig
+        generateBuilders = false
+        usePrimitives = false
+        sourceFiles = []
+        targetPackage = ''
+        propertyWordDelimiters = [] as char[]
+        useLongIntegers = false
+        useDoubleNumbers = true
+        includeHashcodeAndEquals = true
+        includeToString = true
+        annotationStyle = AnnotationStyle.JACKSON
+        customAnnotator = NoopAnnotator.class
+        includeJsr303Annotations = false
+        sourceType = SourceType.JSONSCHEMA
+        outputEncoding = 'UTF-8'
+        useJodaDates = false
+        useCommonsLang3 = false
+        fileFilter = new AllFileFilter()
+        initializeCollections = true
+    }
 
-  @Override
-  public Iterator<File> getSource() {
-    sourceFiles.iterator()
-  }
+    @Override
+    public Iterator<File> getSource() {
+        sourceFiles.iterator()
+    }
 
-  public void setSource(Iterable<File> files) {
-    def copy = [] as List
-    files.each { copy.add(it) }
-    sourceFiles = copy
-  }
+    void setArrayImplementation(String arrayImplementationClass) {
+        arrayDefinition = Class.forName(arrayImplementationClass);
+    }
 
-  public void setAnnotationStyle(String style) {
-    annotationStyle = AnnotationStyle.valueOf(style.toUpperCase())
-  }
+    void setArrayDefinition(String arrayDefinitionClass) {
+        arrayImplementation = Class.forName(arrayDefinitionClass);
+    }
 
-  public void setCustomAnnotator(String clazz) {
-    customAnnotator = Class.forName(clazz)
-  }
+    public void setSource(Iterable<File> files) {
+        def copy = [] as List
+        files.each { copy.add(it) }
+        sourceFiles = copy
+    }
 
-  public void setSourceType(String s) {
-    sourceType = SourceType.valueOf(s.toUpperCase())
-  }
+    public void setAnnotationStyle(String style) {
+        annotationStyle = AnnotationStyle.valueOf(style.toUpperCase())
+    }
 
-  @Override
-  public String toString() {
-    """|generateBuilders = ${generateBuilders}
+    public void setCustomAnnotator(String clazz) {
+        customAnnotator = Class.forName(clazz)
+    }
+
+    public void setSourceType(String s) {
+        sourceType = SourceType.valueOf(s.toUpperCase())
+    }
+
+    @Override
+    public String toString() {
+        """|generateBuilders = ${generateBuilders}
        |usePrimitives = ${usePrimitives}
        |source = ${sourceFiles}
        |targetDirectory = ${targetDirectory}
@@ -110,6 +120,8 @@ public class JsonSchemaExtension implements GenerationConfig {
        |includeToString = ${includeToString}
        |annotationStyle = ${annotationStyle.toString().toLowerCase()}
        |customAnnotator = ${customAnnotator.getName()}
+       |arrayDefinition = ${arrayDefinition.getName()}
+       |arrayImplementation = ${arrayImplementation.getName()}
        |includeJsr303Annotations = ${includeJsr303Annotations}
        |sourceType = ${sourceType.toString().toLowerCase()}
        |removeOldOutput = ${removeOldOutput}
@@ -118,5 +130,5 @@ public class JsonSchemaExtension implements GenerationConfig {
        |useCommonsLang3 = ${useCommonsLang3}
        |initializeCollections = ${initializeCollections}
      """.stripMargin()
-  }
+    }
 }

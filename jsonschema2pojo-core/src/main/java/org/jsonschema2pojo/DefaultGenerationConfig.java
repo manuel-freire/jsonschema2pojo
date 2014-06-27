@@ -18,7 +18,9 @@ package org.jsonschema2pojo;
 
 import java.io.File;
 import java.io.FileFilter;
+import java.util.ArrayList;
 import java.util.Iterator;
+import java.util.List;
 
 /**
  * A generation config that returns default values for all behavioural options.
@@ -49,7 +51,17 @@ public class DefaultGenerationConfig implements GenerationConfig {
         throw new UnsupportedOperationException("No default source available");
     }
 
-    /**
+	@Override
+	public Class<?> getArrayImplementation() {
+		return ArrayList.class;
+	}
+
+	@Override
+	public Class<?> getArrayDefinition() {
+		return List.class;
+	}
+
+	/**
      * @return the current working directory
      */
     @Override
