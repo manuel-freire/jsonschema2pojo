@@ -328,14 +328,14 @@ public class Jsonschema2PojoMojo extends AbstractMojo implements GenerationConfi
 	 */
 	private String arrayImplementationClass = "java.util.ArrayList";
 
-
 	/**
-     * Whether to initialize Set and List fields as empty collections, or leave them as <code>null</code>.
-     *
-     * @parameter expression="${jsonschema2pojo.initializeCollections}" default="true"
-     * @since
-     */
-    private boolean initializeCollections = true;
+	 * Whether to initialize Set and List fields as empty collections, or leave them as <code>null</code>.
+	 *
+	 * @parameter expression="${jsonschema2pojo.initializeCollections}" default="true"
+	 * @since
+	 */
+	private boolean initializeCollections = true;
+
 
     /**
      * List of file patterns to include.
@@ -457,7 +457,8 @@ public class Jsonschema2PojoMojo extends AbstractMojo implements GenerationConfi
 	public Class<?> getArrayDefinition() {
 		if (isNotBlank(arrayDefinitionClass)) {
 			try {
-				return (Class<?>) Class.forName(arrayDefinitionClass);
+				return (Class<?>)Thread.currentThread()
+					.getContextClassLoader().loadClass(arrayDefinitionClass);
 			} catch (ClassNotFoundException e) {
 				throw new IllegalArgumentException(e);
 			}
@@ -471,7 +472,8 @@ public class Jsonschema2PojoMojo extends AbstractMojo implements GenerationConfi
 	public Class<?> getArrayImplementation() {
 		if (isNotBlank(arrayImplementationClass)) {
 			try {
-				return (Class<?>) Class.forName(arrayImplementationClass);
+				return (Class<?>)Thread.currentThread()
+					.getContextClassLoader().loadClass(arrayImplementationClass);
 			} catch (ClassNotFoundException e) {
 				throw new IllegalArgumentException(e);
 			}
