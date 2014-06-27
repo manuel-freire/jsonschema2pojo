@@ -80,6 +80,16 @@ public class RuleFactory {
         return new ArrayRule(this);
     }
 
+	/**
+	 * Provides a rule instance that should be applied when a "javaAnnotation"
+	 * declaration is found in the schema.
+	 *
+	 * @return a schema rule that can handle the "javaAnnotation" declaration.
+	 */
+	public Rule<JFieldVar, JFieldVar> getAnnotationRule() {
+		return new AnnotationRule(this);
+	}
+
     /**
      * Provides a rule instance that should be applied when a "description"
      * declaration is found in the schema.

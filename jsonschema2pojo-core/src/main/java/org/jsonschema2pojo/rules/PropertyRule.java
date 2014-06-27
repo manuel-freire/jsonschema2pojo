@@ -16,11 +16,6 @@
 
 package org.jsonschema2pojo.rules;
 
-import static javax.lang.model.SourceVersion.*;
-import static org.apache.commons.lang3.StringUtils.*;
-
-import org.jsonschema2pojo.Schema;
-
 import com.fasterxml.jackson.databind.JsonNode;
 import com.sun.codemodel.JBlock;
 import com.sun.codemodel.JDefinedClass;
@@ -30,6 +25,10 @@ import com.sun.codemodel.JMethod;
 import com.sun.codemodel.JMod;
 import com.sun.codemodel.JType;
 import com.sun.codemodel.JVar;
+import org.jsonschema2pojo.Schema;
+
+import static javax.lang.model.SourceVersion.isKeyword;
+import static org.apache.commons.lang3.StringUtils.capitalize;
 
 /**
  * Applies the schema rules that represent a property definition.
@@ -107,6 +106,10 @@ public class PropertyRule implements Rule<JDefinedClass, JDefinedClass> {
         if (node.has("pattern")) {
             ruleFactory.getPatternRule().apply(nodeName, node.get("pattern"), field, schema);
         }
+
+	    if (node.has("javaAnnotation")) {
+		    ruleFactory.getAnnotationRule().apply(nodeName, node.get("javaAnnotation"), field, schema);
+	    }
 
         ruleFactory.getDefaultRule().apply(nodeName, node.get("default"), field, schema);
 
